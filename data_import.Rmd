@@ -1,12 +1,60 @@
 ---
 title: "data_import"
 author: Alison Elgass
-output: git_document
+output: github_document
 ---
 
-```{r setup, include=FALSE}
+```{r include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
+library(readxl)
+```
+
+## Load in litters data
+```{r}
+litters_data = read_csv(file = "./data/FAS_litters.csv")
+litters_data = janitor::clean_names(litters_data)
+
+#quick check first few rows of data
+head(litters_data)
+```
+
+
+## Load in pups data
+```{r}
+pups_data = read_csv(file = "./data/FAS_pups.csv")
+pups_data = janitor::clean_names(pups_data)
+
+```
+
+## Now read in litters data AND specify column types
+```{r}
+litters_data = read_csv(
+  file = "./data/FAS_litters.csv",
+  col_types = cols(
+    Group = col_character(),
+    `Litter Number` = col_character(),
+    `GD0 weight` = col_double(),
+    `GD18 weight` = col_double(),
+    `GD of Birth` = col_integer(),
+    `Pups born alive` = col_integer(),
+    `Pups dead @ birth` = col_integer(),
+    `Pups survive` = col_integer()
+  )
+)
+```
+
+## Read in an excel file
+```{r}
+#note we loaded package readxl at top
+mlb11_data = read_excel(path = "./data/mlb11.xlsx")
+```
+
+## Read in a SAS file
+```{r}
+#here we won't load package, but rather use ::
+pulse_data = haven::read_sas("./data/public_pulse_data.sas7bdat")
+
 ```
 
