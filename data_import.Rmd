@@ -1,0 +1,12 @@
+---
+title: "data_import"
+author: Alison Elgass
+output: git_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
