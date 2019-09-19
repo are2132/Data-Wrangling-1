@@ -1,0 +1,95 @@
+---
+title: "data_manipulation"
+author: Alison Elgass
+output: github_document
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+## Load in litters data
+```{r}
+litters_data = read_csv(file = "./data/FAS_litters.csv")
+litters_data = janitor::clean_names(litters_data)
+
+pups_data = read_csv(file = "./data/FAS_pups.csv")
+pups_data = janitor::clean_names(pups_data)
+
+```
+
+## Selecting!!
+```{r}
+select(litters_data, group, litter_number, gd0_weight)
+
+#order matters!
+select(litters_data, litter_number, group, gd0_weight)
+
+select(litters_data, group, starts_with("pups"))
+
+#everything includes all columns, but we rearrange them
+select(litters_data, litter_number, group, everything())
+select(litters_data, gd_of_birth, gd18_weight, everything())
+
+#select all cols except group
+select(litters_data, -group)
+
+#selects and renames 2 cols
+select(litters_data, GROUP = group, LiTtEr_NuMbEr = litter_number)
+
+#renames 2 cols, leaves all intact
+rename(litters_data, GROUP = group, LiTtEr_NuMbEr = litter_number)
+
+```
+
+## Filtering!!!
+```{r}
+filter(litters_data, group == "Con7")
+
+filter(litters_data, pups_survive != 6)
+
+#must satisfy BOTH requirements (same effect)
+filter(litters_data, pups_born_alive < 6, group == "Con7")
+filter(litters_data, pups_born_alive < 6 & group == "Con7")
+
+
+#satisfies one or the other (easier to use than |)
+filter(litters_data, group %in% c("Con7", "Con8"))
+#filter(litters_data, group == "Con7" | group == "Mod8")
+
+#drop na values
+drop_na(litters_data, gd0_weight)
+```
+
+## Mutate
+```{r}
+#adds new wt_gain column, changes group col name
+mutate(
+  litters_data,
+  wt_gain = gd18_weight - gd0_weight,
+  group = str_to_lower(group))
+
+```
+
+## Arrange
+```{r}
+arrange(litters_data, pups_born_alive)
+```
+
+## Collection of Commands, using piping
+```{r}
+litters_data = 
+  read_csv("./data/FAS_litters.csv") %>%
+  janitor::clean_names() %>%
+  select(-pups_survive) %>%
+  mutate(
+    wt_gain = gd18_weight - gd0_weight,
+    group = str_to_lower(group)) %>% 
+  drop_na(gd0_weight)
+
+#check it out
+litters_data
+```
+
